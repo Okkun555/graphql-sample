@@ -1,14 +1,16 @@
 const { ApolloServer, gql } = require("apollo-server");
 
+// スキーマの設定
 const typeDefs = gql`
   type Query {
-    hello: String
+    hello(name: String!): String
   }
 `;
 
+// リゾルバの設定
 const resolvers = {
   Query: {
-    hello: () => "Hello World",
+    hello: (parent, args) => `Hello ${args.name}`,
   },
 };
 
