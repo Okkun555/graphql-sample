@@ -1,4 +1,5 @@
 const { ApolloServer, gql } = require("apollo-server");
+const { default: axios } = require("axios");
 
 // スキーマの設定
 const typeDefs = gql`
@@ -15,17 +16,20 @@ const typeDefs = gql`
   }
 `;
 
-const users = [
-  { id: "1", name: "Kana Togo", email: "togo@sample.com" },
-  { id: "2", name: "Tom Doe", email: "tom@test.com" },
-];
-
 // リゾルバの設定
 const resolvers = {
   Query: {
     hello: (parent, args) => `Hello ${args.name}`,
-    users: () => users,
-    user: (parent, args) => users.find((user) => user.id === args.id),
+    users: async () => {
+      const res = await axios.get("https://jsonplaceholder.typicode.com/users");
+      return res.data;
+    },
+    user: async (parent, args) => {
+      const res = await axios.get(
+        `https://jsonplaceholder.typicode.com/users/${args.id}`
+      );
+      return res.data;
+    },
   },
 };
 
